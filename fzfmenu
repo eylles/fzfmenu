@@ -1,0 +1,97 @@
+#!/bin/sh
+# fzfmenu - fzf as dmenu replacement
+
+CONFIG="${XDG_CONFIG_HOME:-~/.config}/fzfmenu/fzfrc"
+if [ -f "$CONFIG" ]; then
+    # load config
+    . "$CONFIG"
+fi
+
+# usage: is_num "value"
+# return type: bool
+is_num() {
+    printf %d "$1" >/dev/null 2>&1
+}
+
+input=$(mktemp -u --suffix .fzfmenu.input)
+output=$(mktemp -u --suffix .fzfmenu.output)
+mkfifo "$input"
+mkfifo "$output"
+chmod 600 "$input" "$output"
+
+while getopts "fbip:l:w:P:" opt; do case "${opt}" in
+    i) FZF_OPTS="$FZF_OPTS -$opt"  ;;
+    l)
+        if is_num "$OPTARG"; then
+            TERM_HEIGHT="$(( OPTARG + 3 ))"
+        else
+            printf '%s: argument for -%s "%s" is not a number\n' "${0##*/}" "$opt" "$OPTARG" >&2
+            exit 1
+        fi
+    ;;
+    p) FZF_OPTS="$FZF_OPTS --header '$OPTARG'" ;;
+    P) FZF_OPTS="$FZF_OPTS --preview '$OPTARG'" ;;
+    w) TERM_OPTS="-into $OPTARG" ;;
+    f|b) printf '%s\n' "${0##*/}: option $opt ignored" ;;
+    *) printf '%s\n' "${0##*/}: invalid option $opt" >&2 ; exit 1 ;;
+esac done
+shift $(( OPTIND -1 ))
+
+# add options from config and replace others if necesary
+[ -z "$TERM_HEIGHT" ] && TERM_HEIGHT=15
+case "$TERM_HEIGHT" in
+    [1-5])       TERM_HEIGHT="-geometry 40x5 "   ;;
+    [6-9]|10)    TERM_HEIGHT="-geometry 50x10 "  ;;
+    1[0-5])      TERM_HEIGHT="-geometry 60x15 "  ;;
+    1[6-9]|20)   TERM_HEIGHT="-geometry 70x20 "  ;;
+    2[0-5])      TERM_HEIGHT="-geometry 80x25 "  ;;
+    2[6-9]|30)   TERM_HEIGHT="-geometry 100x30 " ;;
+    3[0-5])      TERM_HEIGHT="-geometry 120x35 " ;;
+    3[6-9]|40)   TERM_HEIGHT="-geometry 140x40 " ;;
+    *)           TERM_HEIGHT="-geometry 140x40 " ;;
+esac
+
+runPrompt=$(printf '%s\n' "$FZF_OPTS" | grep "header")
+if [ -z "$runPrompt" ]; then
+    FZF_OPTS="$FZF_OPTS $FZF_HEADER"
+fi
+
+FZF_OPTS="$FZF_OPTS $FZF_MENU_OPTS"
+FZF_OPTS="$FZF_OPTS $FZF_COLORS"
+
+export FZF_OPTS
+
+if [ -z "$FLOATING_TERMINAL" ]; then
+    FLOATING_TERMINAL='xterm -name FZFmenu -T FZFmenu '
+fi
+if [ -z "$EXEC_FLAG" ]; then
+    EXEC_FLAG=' -e '
+fi
+
+$FLOATING_TERMINAL $TERM_HEIGHT $TERM_OPTS $EXEC_FLAG "cat $input | fzf $FZF_OPTS > $output" &
+
+termPID=$!
+
+# return type: void
+# description:
+#     kill floating terminal and
+#     remove temp files
+cleanup() {
+    if kill -0 "$termPID" 2>/dev/null; then
+        kill $termPID 2>/dev/null
+    fi
+    rm -f "$input $output"
+}
+
+# handle ctrl+c outside child terminal window
+trap cleanup INT TERM EXIT
+
+# consume stdin into named pipe
+cat > "$input"
+
+for arg in "$@"; do
+    # if it's a pipe then drain it to input
+    [ -p "$arg" ] && { cat "$arg" > "$input"; };
+done
+
+cat "$output"
