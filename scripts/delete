@@ -1,0 +1,61 @@
+#!/bin/sh
+
+# usage: l_echo "$string"
+# return type: string
+# description:
+#     Local echo function without flags
+l_echo () {
+  printf '%s\n' "$@"
+}
+
+# type: string
+# description:
+#     String for the delete prompt
+Prompt="delete files?"
+# type: string
+# description:
+#     String for Yes
+Ystr="Yes"
+# type: string
+# description:
+#     String for No
+Nstr="No"
+# type: string
+# description:
+#     successfull file deletion message
+DeleteMessage="files deleted successfully"
+# type: string
+# description:
+#     cancelled file deletion message
+CancelMessage="file deletion cancelled"
+
+# type: command
+# description:
+#     command to delete files
+#     by deafult is rm
+DeleteCMD=$(command -v rm)
+
+# type: string
+# description:
+#     New Line '\n' separated list of files
+FileList=$(l_echo "$@")
+
+Lines=$(l_echo "$FileList" | wc -l)
+
+# type: string
+# description:
+#     response from fzfmenu
+#     yes or no via $Ystr and $Nstr
+response=$(printf '%s\n%s\n' "${Ystr}" "${Nstr}" | fzfmenu -l "$Lines" -p "$Prompt" -P "printf '%s\n' \"$FileList\"")
+
+case "$response" in
+  "$Ystr")
+      for file in "$@"; do
+        $DeleteCMD "${file}"
+      done
+      l_echo "$DeleteMessage"
+    ;;
+  "$Nstr")
+      l_echo "$CancelMessage"
+    ;;
+esac
