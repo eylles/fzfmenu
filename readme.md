@@ -12,12 +12,9 @@ But for real fzf can do i say all that dmenu can plus the previews and a couple 
 
 ## TODO
 
-[ ] fix the jank
 
-[ ] add a dedicated fzf wrapper to have images with ueberzug or sixel
-
-[ ] write a fzfmenu-run script to imitate dmenu
-
-[ ] port ~steal~ features from [term-menu](https://github.com/Seirdy/term-dmenu)
-
-[ ] port ~steal~ the providers feature from [sway-launcher](https://github.com/Biont/sway-launcher-desktop)
+- [ ] fix the jank
+- [ ] add a dedicated fzf wrapper to have images with ueberzug or sixel
+- [ ] write a fzfmenu-run script to imitate dmenu
+- [ ] port ~steal~ features from [term-menu](https://github.com/Seirdy/term-dmenu)
+- [ ] port ~steal~ the providers feature from [sway-launcher](https://github.com/Biont/sway-launcher-desktop)
