@@ -32,8 +32,10 @@ CancelMessage="file deletion cancelled"
 # type: command
 # description:
 #     command to delete files
-#     by deafult is rm
-DeleteCMD=$(command -v rm)
+#     default is trash-put
+#     but fallbacks to rm
+DeleteCMD=$(command -v trash-put)
+[ -z "$DeleteCMD" ] && DeleteCMD=$(command -v rm)
 
 # type: string
 # description:
