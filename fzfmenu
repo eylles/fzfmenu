@@ -72,6 +72,14 @@ $FLOATING_TERMINAL $TERM_HEIGHT $TERM_OPTS $EXEC_FLAG "cat $input | fzf $FZF_OPT
 
 termPID=$!
 
+# consume stdin into named pipe
+cat > "$input"
+
+for arg in "$@"; do
+    # if it's a pipe then drain it to input
+    [ -p "$arg" ] && { cat "$arg" > "$input"; };
+done
+
 # return type: void
 # description:
 #     kill floating terminal and
@@ -85,13 +93,5 @@ cleanup() {
 
 # handle ctrl+c outside child terminal window
 trap cleanup INT TERM EXIT
-
-# consume stdin into named pipe
-cat > "$input"
-
-for arg in "$@"; do
-    # if it's a pipe then drain it to input
-    [ -p "$arg" ] && { cat "$arg" > "$input"; };
-done
 
 cat "$output"
