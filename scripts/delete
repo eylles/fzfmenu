@@ -48,7 +48,7 @@ Lines=$(l_echo "$FileList" | wc -l)
 # description:
 #     response from fzfmenu
 #     yes or no via $Ystr and $Nstr
-response=$(printf '%s\n%s\n' "${Ystr}" "${Nstr}" | fzfmenu -l "$Lines" -p "$Prompt" -P "printf '%s\n' \"$FileList\"")
+response=$(printf '%s\n%s\n' "${Ystr}" "${Nstr}" | fzfmenu -l "$Lines" -p "$Prompt" -P "echo \"$FileList\"")
 
 case "$response" in
   "$Ystr")
