@@ -43,6 +43,9 @@ DeleteCMD=$(command -v trash-put)
 FileList=$(l_echo "$@")
 
 Lines=$(l_echo "$FileList" | wc -l)
+if [ "$Lines" -lt 15 ]; then
+    Lines=15
+fi
 
 # type: string
 # description:
