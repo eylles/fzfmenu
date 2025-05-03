@@ -13,11 +13,15 @@ is_num() {
     printf %d "$1" >/dev/null 2>&1
 }
 
-input=$(mktemp -u --suffix .fzfmenu.input)
-output=$(mktemp -u --suffix .fzfmenu.output)
-mkfifo "$input"
-mkfifo "$output"
-chmod 600 "$input" "$output"
+input="/tmp/fzfmenu.input"
+if [ ! -p "$input" ]; then
+    mkfifo -m 600 "$input"
+fi
+output="/tmp/fzfmenu.output"
+if [ ! -p "$output" ]; then
+    mkfifo -m 600 "$output"
+fi
+# chmod 600 "$input" "$output"
 
 while getopts "fbip:l:w:P:" opt; do case "${opt}" in
     i) FZF_OPTS="$FZF_OPTS -$opt"  ;;
