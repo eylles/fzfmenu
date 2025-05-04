@@ -6,6 +6,12 @@ FZF_HEADER="--header 'fzf menu'"
 # default prompt
 FZF_PROMPT="--prompt='filter: '"
 
+# default options
+FZF_MENU_OPTS="--layout=reverse --height 100% \
+     --cycle --preview-window sharp --preview-window 70% \
+     --bind alt-k:preview-up \
+     --bind alt-j:preview-down"
+
 CONFIG="${XDG_CONFIG_HOME:-${HOME}/.config}/fzfmenu/fzfrc"
 if [ -f "$CONFIG" ]; then
     # load config
