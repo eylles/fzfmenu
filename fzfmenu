@@ -1,6 +1,11 @@
 #!/bin/sh
 # fzfmenu - fzf as dmenu replacement
 
+# default header
+FZF_HEADER="--header 'fzf menu'"
+# default prompt
+FZF_PROMPT="--prompt='filter: '"
+
 CONFIG="${XDG_CONFIG_HOME:-${HOME}/.config}/fzfmenu/fzfrc"
 if [ -f "$CONFIG" ]; then
     # load config
@@ -23,7 +28,7 @@ if [ ! -p "$output" ]; then
 fi
 # chmod 600 "$input" "$output"
 
-while getopts "fbip:l:w:P:" opt; do case "${opt}" in
+while getopts "fbip:l:w:P:H:" opt; do case "${opt}" in
     i) FZF_OPTS="$FZF_OPTS -$opt"  ;;
     l)
         if is_num "$OPTARG"; then
@@ -33,7 +38,8 @@ while getopts "fbip:l:w:P:" opt; do case "${opt}" in
             exit 1
         fi
     ;;
-    p) FZF_OPTS="$FZF_OPTS --header '$OPTARG'" ;;
+    p) FZF_OPTS="$FZF_OPTS --prompt='$OPTARG '" ;;
+    H) FZF_OPTS="$FZF_OPTS --header '$OPTARG' --header-first" ;;
     P) FZF_OPTS="$FZF_OPTS --preview '$OPTARG'" ;;
     w) TERM_OPTS="-into $OPTARG" ;;
     f|b) printf '%s\n' "${0##*/}: option $opt ignored" ;;
@@ -55,9 +61,14 @@ case "$TERM_HEIGHT" in
     *)           TERM_HEIGHT="-geometry 140x40 " ;;
 esac
 
-runPrompt=$(printf '%s\n' "$FZF_OPTS" | grep "header")
+runPrompt=$(printf '%s\n' "$FZF_OPTS" | grep "prompt")
 if [ -z "$runPrompt" ]; then
-    FZF_OPTS="$FZF_OPTS $FZF_HEADER"
+    FZF_OPTS="$FZF_OPTS $FZF_PROMPT"
+fi
+
+runHeader=$(printf '%s\n' "$FZF_OPTS" | grep "header")
+if [ -z "$runHeader" ]; then
+    FZF_OPTS="$FZF_OPTS $FZF_HEADER --header-first"
 fi
 
 FZF_OPTS="$FZF_OPTS $FZF_MENU_OPTS"
