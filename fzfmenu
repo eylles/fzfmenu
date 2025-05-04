@@ -28,8 +28,9 @@ if [ ! -p "$output" ]; then
 fi
 # chmod 600 "$input" "$output"
 
-while getopts "fbip:l:w:P:H:" opt; do case "${opt}" in
+while getopts "fbip:l:w:P:H:M" opt; do case "${opt}" in
     i) FZF_OPTS="$FZF_OPTS -$opt"  ;;
+    M) FZF_OPTS="$FZF_OPTS --multi"  ;;
     l)
         if is_num "$OPTARG"; then
             TERM_HEIGHT="$(( OPTARG + 3 ))"
