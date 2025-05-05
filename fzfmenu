@@ -8,9 +8,9 @@ FZF_PROMPT="--prompt='filter: '"
 
 # default options
 FZF_MENU_OPTS="--layout=reverse --height 100% \
-     --cycle --preview-window sharp --preview-window 70% \
-     --bind alt-k:preview-up \
-     --bind alt-j:preview-down"
+               --cycle --preview-window sharp --preview-window 70% \
+               --bind alt-k:preview-up \
+               --bind alt-j:preview-down"
 
 FZF_COLORS="--color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9,fg+:#f8f8f2,bg+:#44475a \
 --color=hl+:#bd93f9,info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6,marker:#ff79c6 \
@@ -58,7 +58,7 @@ while getopts "fbip:l:w:P:H:M" opt; do case "${opt}" in
 esac done
 shift $(( OPTIND -1 ))
 
-# add options from config and replace others if necesary
+# add options from config and replace others if necessary
 [ -z "$TERM_HEIGHT" ] && TERM_HEIGHT=15
 case "$TERM_HEIGHT" in
     [1-5])       TERM_HEIGHT="-geometry 40x5 "   ;;
