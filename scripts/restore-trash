@@ -1,0 +1,24 @@
+#!/bin/sh
+
+myname="${0##*/}"
+
+Prompt="select files to restore"
+
+deleted="$(printf "\n" | trash-restore |
+    head -n -1 |
+    awk '{print $1, $4}')"
+lines=20
+choice="$(echo "$deleted" | fzfmenu -M -l "$lines" -p "$Prompt")"
+ids="$(echo "$choice" | cut -d' ' -f1 | tr '\n' ',')"
+files="$(echo "$choice" | cut -d' ' -f2)"
+ids="${ids%,}"
+
+if [ -n "$ids" ]; then
+    echo "$ids" | trash-restore >/dev/null
+    printf '%s\n' "${myname} restored file(s):"
+    for file in $files; do
+        printf '    %s\n' "$file"
+    done
+else
+    printf '%s\n' "${myname}: no file chosen"
+fi
