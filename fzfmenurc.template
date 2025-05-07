@@ -1,12 +1,11 @@
 # vim: ft=sh
 
-FZF_HEADER="--header 'fzf Menu'"
-FZF_HEIGHT="--height 100%"
+FZF_HEADER="--header 'FZF Menu'"
+FZF_PROMPT="--prompt='filter: '"
 
 # default options, same as set inside the script when not set here
-FZF_MENU_OPTS="--layout=reverse \
+FZF_MENU_OPTS="--layout=reverse --height 100%  \
      --cycle --preview-window sharp --preview-window 70% \
-     --prompt='filter: ' \
      --bind alt-k:preview-up \
      --bind alt-j:preview-down"
 
