@@ -1,0 +1,30 @@
+# vim: ft=sh
+
+FZF_HEADER="--header 'fzf Menu'"
+FZF_HEIGHT="--height 100%"
+
+# default options, same as set inside the script when not set here
+FZF_MENU_OPTS="--layout=reverse \
+     --cycle --preview-window sharp --preview-window 70% \
+     --prompt='filter: ' \
+     --bind alt-k:preview-up \
+     --bind alt-j:preview-down"
+
+# colorscheme for fzf, by default we ship dracula
+FZF_COLORS="--color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9,fg+:#f8f8f2,bg+:#44475a \
+--color=hl+:#bd93f9,info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6,marker:#ff79c6 \
+--color=spinner:#ffb86c,header:#6272a4"
+
+# the terminal to use as a floating terminal, you must set this var along all
+# the necessary arguments to set the correct name and/or class for your
+# terminal, remember to set the name and or classname to fzfmenu for
+# consistency, for an example we are using xterm here
+#FLOATING_TERMINAL='xterm -name FZFmenu -T FZFmenu '
+#       WM_CLASS name flag  ^      ^     ^    ^   ^
+#          WM_CLASS name to set ---|     |    |   |
+#                 terminal title flag ---|    |   |
+#                    terminal title to set ---|   |
+#                 this has to end with a space ---|
+
+# the terminal's exec flag, yes it must be surrounded by spaces
+#EXEC_FLAG=' -e '
